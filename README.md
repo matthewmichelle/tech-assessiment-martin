@@ -26,7 +26,7 @@
     ```
 
 ## API Endpoints
-
+**Swagger Documentation**: You can view the API documentation using Swagger by navigating to http://localhost:3002/api-docs in your browser.
 - **GET /jobs**: List all jobs
   - **Description**: Retrieve a list of all scheduled jobs.
   - **Response**: An array of job objects.
