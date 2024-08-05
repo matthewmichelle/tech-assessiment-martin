@@ -12,7 +12,6 @@ const jobs_module_1 = require("./jobs/jobs.module");
 const config_1 = require("@nestjs/config");
 const configuration_1 = require("./config/configuration");
 const database_module_1 = require("./database.module");
-const app_controller_1 = require("./app.controller");
 const throttler_1 = require("@nestjs/throttler");
 const nestjs_redis_1 = require("@liaoliaots/nestjs-redis");
 const nestjs_prometheus_1 = require("@willsoto/nestjs-prometheus");
@@ -64,7 +63,6 @@ exports.AppModule = AppModule = __decorate([
             rabbitmq_module_1.RabbitmqModule,
         ],
         exports: [config_1.ConfigModule.forRoot({ isGlobal: true, load: [configuration_1.default] })],
-        controllers: [app_controller_1.AppController],
     })
 ], AppModule);
 //# sourceMappingURL=app.module.js.map

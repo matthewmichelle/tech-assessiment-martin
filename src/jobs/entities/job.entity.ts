@@ -1,5 +1,3 @@
-// src/jobs/entities/job.entity.ts
-
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()

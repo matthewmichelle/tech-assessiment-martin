@@ -49,7 +49,7 @@ let JobsService = class JobsService {
         return savedJob;
     }
     scheduleJob(job) {
-        const jobInstance = new cron_1.CronJob('*/30 * * * *', () => {
+        const jobInstance = new cron_1.CronJob(job.interval.toString(), () => {
             this.executeJob(job);
         });
         jobInstance.start();

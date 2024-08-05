@@ -3,7 +3,6 @@ import { JobsModule } from './jobs/jobs.module';
 import { ConfigModule } from '@nestjs/config';
 import configuration from './config/configuration';
 import { DatabaseModule } from './database.module';
-import { AppController } from './app.controller';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { RedisModule } from '@liaoliaots/nestjs-redis';
 import { PrometheusModule } from '@willsoto/nestjs-prometheus';
@@ -48,7 +47,6 @@ import * as correlator from 'express-correlation-id';
     RabbitmqModule,
   ],
   exports: [ConfigModule.forRoot({ isGlobal: true, load: [configuration] })],
-  controllers: [AppController],
 })
 export class AppModule implements NestModule {
   /**

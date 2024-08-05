@@ -79,7 +79,7 @@ export class JobsService {
    * @param job - The job to schedule.
    */
   scheduleJob(job: Job) {
-    const jobInstance = new CronJob('*/30 * * * *', () => {
+    const jobInstance = new CronJob(job.interval.toString(), () => {
       this.executeJob(job);
     });
 
