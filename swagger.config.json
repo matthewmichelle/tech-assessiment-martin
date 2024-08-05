@@ -1,0 +1,9 @@
+{
+    "title": "API Documentation",
+    "description": "The API description Job Scheduler MS",
+    "version": "1.0",
+    "auth_type": "http",
+    "auth_scheme": "bearer",
+    "auth_scheme_format": "JWT",
+    "auth_token": "access-token"
+  }
