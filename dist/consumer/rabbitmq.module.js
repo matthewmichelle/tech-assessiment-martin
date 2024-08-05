@@ -6,34 +6,44 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.RabbitMQModule = void 0;
+exports.RabbitmqModule = void 0;
 const common_1 = require("@nestjs/common");
+const rabbitmq_consumer_service_1 = require("./rabbitmq-consumer.service");
 const microservices_1 = require("@nestjs/microservices");
-const rabbitmq_controller_1 = require("./rabbitmq.controller");
-const rabbitmq_service_1 = require("./rabbitmq.service");
-let RabbitMQModule = class RabbitMQModule {
+const config_1 = require("@nestjs/config");
+const jobs_service_1 = require("../jobs/jobs.service");
+const database_module_1 = require("../database.module");
+const job_entity_1 = require("../jobs/entities/job.entity");
+let RabbitmqModule = class RabbitmqModule {
 };
-exports.RabbitMQModule = RabbitMQModule;
-exports.RabbitMQModule = RabbitMQModule = __decorate([
+exports.RabbitmqModule = RabbitmqModule;
+exports.RabbitmqModule = RabbitmqModule = __decorate([
     (0, common_1.Module)({
         imports: [
-            microservices_1.ClientsModule.register([
+            database_module_1.DatabaseModule.forFeature([job_entity_1.Job]),
+            config_1.ConfigModule.forRoot({
+                isGlobal: true,
+            }),
+            microservices_1.ClientsModule.registerAsync([
                 {
-                    name: 'RABBITMQ_SERVICE',
-                    transport: microservices_1.Transport.RMQ,
-                    options: {
-                        urls: ['amqp://localhost:5672'],
-                        queue: 'main_queue',
-                        queueOptions: {
-                            durable: false,
+                    name: 'JOB_SCHEDULE_SERVICE',
+                    imports: [config_1.ConfigModule],
+                    inject: [config_1.ConfigService],
+                    useFactory: async (configService) => ({
+                        transport: microservices_1.Transport.RMQ,
+                        options: {
+                            urls: [configService.get('RABBITMQ_URL')],
+                            queue: configService.get('RABBITMQ_QUEUE'),
+                            queueOptions: {
+                                durable: true,
+                            },
                         },
-                    },
+                    }),
                 },
             ]),
         ],
-        controllers: [rabbitmq_controller_1.RabbitMQController],
-        providers: [rabbitmq_service_1.RabbitMQService],
-        exports: [rabbitmq_service_1.RabbitMQService],
+        providers: [rabbitmq_consumer_service_1.RabbitmqConsumerService, jobs_service_1.JobsService],
+        exports: [rabbitmq_consumer_service_1.RabbitmqConsumerService],
     })
-], RabbitMQModule);
+], RabbitmqModule);
 //# sourceMappingURL=rabbitmq.module.js.map

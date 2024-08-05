@@ -16,6 +16,7 @@ const app_controller_1 = require("./app.controller");
 const throttler_1 = require("@nestjs/throttler");
 const nestjs_redis_1 = require("@liaoliaots/nestjs-redis");
 const nestjs_prometheus_1 = require("@willsoto/nestjs-prometheus");
+const rabbitmq_module_1 = require("./consumer/rabbitmq.module");
 const correlator = require("express-correlation-id");
 let AppModule = class AppModule {
     configure(consumer) {
@@ -27,6 +28,7 @@ exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
             database_module_1.DatabaseModule,
+            rabbitmq_module_1.RabbitmqModule,
             throttler_1.ThrottlerModule.forRoot([
                 {
                     name: 'short',
@@ -59,6 +61,7 @@ exports.AppModule = AppModule = __decorate([
             }),
             config_1.ConfigModule.forRoot({ isGlobal: true, load: [configuration_1.default] }),
             jobs_module_1.JobsModule,
+            rabbitmq_module_1.RabbitmqModule,
         ],
         exports: [config_1.ConfigModule.forRoot({ isGlobal: true, load: [configuration_1.default] })],
         controllers: [app_controller_1.AppController],

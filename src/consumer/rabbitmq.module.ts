@@ -1,26 +1,36 @@
 import { Module } from '@nestjs/common';
+import { RabbitmqConsumerService } from './rabbitmq-consumer.service';
 import { ClientsModule, Transport } from '@nestjs/microservices';
-import { RabbitMQController } from './rabbitmq.controller';
-import { RabbitMQService } from './rabbitmq.service';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { JobsService } from 'src/jobs/jobs.service';
+import { DatabaseModule } from 'src/database.module';
+import { Job } from 'src/jobs/entities/job.entity';
 
 @Module({
   imports: [
-    ClientsModule.register([
+    DatabaseModule.forFeature([Job]),
+    ConfigModule.forRoot({
+      isGlobal: true, // Make ConfigModule globally available
+    }),
+    ClientsModule.registerAsync([
       {
-        name: 'RABBITMQ_SERVICE',
-        transport: Transport.RMQ,
-        options: {
-          urls: ['amqp://localhost:5672'],
-          queue: 'main_queue',
-          queueOptions: {
-            durable: false,
+        name: 'JOB_SCHEDULE_SERVICE',
+        imports: [ConfigModule],
+        inject: [ConfigService],
+        useFactory: async (configService: ConfigService) => ({
+          transport: Transport.RMQ,
+          options: {
+            urls: [configService.get<string>('RABBITMQ_URL')],
+            queue: configService.get<string>('RABBITMQ_QUEUE'),
+            queueOptions: {
+              durable: true,
+            },
           },
-        },
+        }),
       },
     ]),
   ],
-  controllers: [RabbitMQController],
-  providers: [RabbitMQService],
-  exports: [RabbitMQService], // Export the service if needed elsewhere
+  providers: [RabbitmqConsumerService, JobsService],
+  exports: [RabbitmqConsumerService],
 })
-export class RabbitMQModule {}
+export class RabbitmqModule {}

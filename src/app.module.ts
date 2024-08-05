@@ -1,18 +1,18 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { JobsModule } from './jobs/jobs.module';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 import configuration from './config/configuration';
 import { DatabaseModule } from './database.module';
 import { AppController } from './app.controller';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { RedisModule } from '@liaoliaots/nestjs-redis';
 import { PrometheusModule } from '@willsoto/nestjs-prometheus';
+import { RabbitmqModule } from './consumer/rabbitmq.module';
 import * as correlator from 'express-correlation-id';
-import { RabbitMQModule } from './consumer/rabbitmq.module';
-
 @Module({
   imports: [
     DatabaseModule,
+    RabbitmqModule,
     ThrottlerModule.forRoot([
       {
         name: 'short',
@@ -30,7 +30,6 @@ import { RabbitMQModule } from './consumer/rabbitmq.module';
         limit: 100,
       },
     ]),
-    // RabbitMQModule,
     RedisModule.forRoot({
       config: {
         host: process.env.REDIS_HOST || 'localhost',
@@ -46,6 +45,7 @@ import { RabbitMQModule } from './consumer/rabbitmq.module';
     }),
     ConfigModule.forRoot({ isGlobal: true, load: [configuration] }),
     JobsModule,
+    RabbitmqModule,
   ],
   exports: [ConfigModule.forRoot({ isGlobal: true, load: [configuration] })],
   controllers: [AppController],
